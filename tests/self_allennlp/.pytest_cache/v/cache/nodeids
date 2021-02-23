@@ -1,0 +1,4 @@
+[
+  "dataset_readers_test.py::TestClsTsvDataSetReader::()::test_read_from_file[True]",
+  "dataset_readers_test.py::TestClsTsvDataSetReader::()::test_read_from_file[False]"
+]
