@@ -1,6 +1,7 @@
 import tempfile
 from typing import Dict, Iterable, List, Tuple
 import os
+import h5py
 import allennlp
 import torch
 from allennlp.data import PyTorchDataLoader, DatasetReader, Instance, Vocabulary
@@ -19,9 +20,10 @@ from allennlp.training.metrics import CategoricalAccuracy
 from allennlp.models import BasicClassifier
 from allennlp.modules.seq2vec_encoders import LstmSeq2VecEncoder
 from self_allennlp.data import ClsTsvDataSetReader, JiebaTokenizer
+from self_allennlp.models import SimpleClassifier
 
 DATA_PATH = "/home/liubin/tutorials/data/action_desc"
-EMBEDDING_FILE = "/home/liubin/tutorials/data/Tencent_AILab_ChineseEmbedding.txt"
+EMBEDDING_FILE = "/home/liubin/tutorials/data/action_desc/embedding.h5"
 
 
 def build_dataset_reader() -> DatasetReader:
@@ -39,18 +41,23 @@ def read_data(
 
 def build_vocab(instances: Iterable[Instance]) -> Vocabulary:
     print("Building the vocabulary")
-    return Vocabulary.from_instances(instances)
+    vocab = Vocabulary.from_files(os.path.join(DATA_PATH, "vocab"))
+    return vocab
 
 
 def build_model(vocab: Vocabulary) -> Model:
     print("Building the model")
-    vocab_size = vocab.get_vocab_size("tokens")
+    # vocab_size = vocab.get_vocab_size("tokens")
+    embedding = Embedding(embedding_dim=200, vocab=vocab, pretrained_file=EMBEDDING_FILE)
+    # with h5py.File(os.path.join(DATA_PATH, "embedding.h5"), 'w') as f:
+    #     f.create_dataset('embedding', data=embedding.weight.data)
     embedder = BasicTextFieldEmbedder(
-        {"tokens": Embedding(embedding_dim=200, vocab=vocab, pretrained_file=EMBEDDING_FILE)})
+        {"tokens": embedding}
+    )
 
-    encoder = LstmSeq2VecEncoder(input_size=200,hidden_size=256)
+    encoder = LstmSeq2VecEncoder(input_size=200, hidden_size=256)
     # encoder = BagOfEmbeddingsEncoder(embedding_dim=200)
-    return BasicClassifier(vocab, embedder, encoder)
+    return SimpleClassifier(vocab, embedder, encoder)
 
 
 def run_training_loop():
@@ -119,6 +126,7 @@ def build_trainer(
         data_loader=train_loader,
         validation_data_loader=dev_loader,
         num_epochs=5,
+        patience=5,
         optimizer=optimizer,
     )
     return trainer

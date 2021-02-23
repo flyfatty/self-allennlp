@@ -12,7 +12,7 @@ from allennlp.data import Vocabulary, TextFieldTensors
 from allennlp.modules import TextFieldEmbedder, Seq2VecEncoder
 from allennlp.nn import util
 from allennlp.models import Model
-from allennlp.training.metrics import CategoricalAccuracy
+from allennlp.training.metrics import CategoricalAccuracy, F1Measure
 
 
 @Model.register('simple_classifier')  # 注册一个Model名称
@@ -28,6 +28,7 @@ class SimpleClassifier(Model):
         num_labels = vocab.get_vocab_size("labels")
         self.classifier = torch.nn.Linear(encoder.get_output_dim(), num_labels)
         self.accuracy = CategoricalAccuracy()
+        self.f1 = F1Measure(1)
 
     def forward(self,
                 tokens: TextFieldTensors,
@@ -46,8 +47,11 @@ class SimpleClassifier(Model):
         output = {'probs': probs}
         if label is not None:
             self.accuracy(logits, label)
+            self.f1(logits, label)
             output['loss'] = F.cross_entropy(logits, label)
         return output
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
-        return {"accuracy": self.accuracy.get_metric(reset)}
+        metrics = {"accuracy": self.accuracy.get_metric(reset)}
+        metrics.update(self.f1.get_metric(reset))
+        return metrics
