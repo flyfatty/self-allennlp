@@ -1,6 +1,6 @@
 import tempfile
 from typing import Dict, Iterable, List, Tuple
-
+import os
 import torch
 
 import allennlp
@@ -20,51 +20,54 @@ from allennlp.training.trainer import Trainer, GradientDescentTrainer
 from allennlp.training.util import evaluate
 from allennlp.models import BasicClassifier
 from self_allennlp.data import ClsTsvDataSetReader
+from allennlp.modules.seq2vec_encoders import LstmSeq2VecEncoder
+from self_allennlp.data import ClsTsvDataSetReader, JiebaTokenizer
+from self_allennlp.models import SimpleClassifier
+
+DATA_PATH = "/home/liubin/tutorials/data/action_desc"
+EMBEDDING_FILE = "/home/liubin/tutorials/data/action_desc/embedding.h5"
+serialization_dir = "/home/liubin/tutorials/data/action_desc/runs"
+
 
 def build_dataset_reader() -> DatasetReader:
-    return ClsTsvDataSetReader()
+    return ClsTsvDataSetReader(tokenizer=JiebaTokenizer())
 
 
 def read_data(
-    reader: DatasetReader
+        reader: DatasetReader
 ) -> Tuple[Iterable[Instance], Iterable[Instance]]:
     print("Reading data")
-    training_data = reader.read("../data/movie_review/train.tsv")
-    validation_data = reader.read("../data/movie_review/valid.tsv")
+    training_data = reader.read(os.path.join(DATA_PATH, "train.tsv"))
+    validation_data = reader.read(os.path.join(DATA_PATH, "valid.tsv"))
     return training_data, validation_data
 
 
 def build_vocab(instances: Iterable[Instance]) -> Vocabulary:
     print("Building the vocabulary")
-    return Vocabulary.from_instances(instances)
+    vocab = Vocabulary.from_files(os.path.join(DATA_PATH, "vocab"))
+    return vocab
 
 
 def build_model(vocab: Vocabulary) -> Model:
     print("Building the model")
-    vocab_size = vocab.get_vocab_size("tokens")
+    # vocab_size = vocab.get_vocab_size("tokens")
+    embedding = Embedding(embedding_dim=200, vocab=vocab, pretrained_file=EMBEDDING_FILE)
+    # with h5py.File(os.path.join(DATA_PATH, "embedding.h5"), 'w') as f:
+    #     f.create_dataset('embedding', data=embedding.weight.data)
     embedder = BasicTextFieldEmbedder(
-        {"tokens": Embedding(embedding_dim=10, num_embeddings=vocab_size)})
-    encoder = BagOfEmbeddingsEncoder(embedding_dim=10)
-    return BasicClassifier(vocab, embedder, encoder)
+        {"tokens": embedding}
+    )
 
-
-def build_data_loaders(
-    train_data: torch.utils.data.Dataset,
-    dev_data: torch.utils.data.Dataset,
-) -> Tuple[allennlp.data.DataLoader, allennlp.data.DataLoader]:
-    # Note that DataLoader is imported from allennlp above, *not* torch.
-    # We need to get the allennlp-specific collate function, which is
-    # what actually does indexing and batching.
-    train_loader = PyTorchDataLoader(train_data, batch_size=8, shuffle=True)
-    dev_loader = PyTorchDataLoader(dev_data, batch_size=8, shuffle=False)
-    return train_loader, dev_loader
+    encoder = LstmSeq2VecEncoder(input_size=200, hidden_size=256)
+    # encoder = BagOfEmbeddingsEncoder(embedding_dim=200)
+    return SimpleClassifier(vocab, embedder, encoder)
 
 
 def build_trainer(
-    model: Model,
-    serialization_dir: str,
-    train_loader: PyTorchDataLoader,
-    dev_loader: PyTorchDataLoader
+        model: Model,
+        serialization_dir: str,
+        train_loader: PyTorchDataLoader,
+        dev_loader: PyTorchDataLoader
 ) -> Trainer:
     parameters = [
         [n, p]
@@ -82,6 +85,20 @@ def build_trainer(
     return trainer
 
 
+# The other `build_*` methods are things we've seen before, so they are
+# in the setup section above.
+def build_data_loaders(
+        train_data: torch.utils.data.Dataset,
+        dev_data: torch.utils.data.Dataset,
+) -> Tuple[allennlp.data.DataLoader, allennlp.data.DataLoader]:
+    # Note that DataLoader is imported from allennlp above, *not* torch.
+    # We need to get the allennlp-specific collate function, which is
+    # what actually does indexing and batching.
+    train_loader = PyTorchDataLoader(train_data, batch_size=8, shuffle=True)
+    dev_loader = PyTorchDataLoader(dev_data, batch_size=8, shuffle=False)
+    return train_loader, dev_loader
+
+
 def run_training_loop():
     dataset_reader = build_dataset_reader()
 
@@ -92,28 +109,6 @@ def run_training_loop():
     vocab = build_vocab(train_data + dev_data)
     model = build_model(vocab)
 
-    # This is the allennlp-specific functionality in the Dataset object;
-    # we need to be able convert strings in the data to integers, and this
-    # is how we do it.
-    train_data.index_with(vocab)
-    dev_data.index_with(vocab)
-
-    # These are again a subclass of pytorch DataLoaders, with an
-    # allennlp-specific collate function, that runs our indexing and
-    # batching code.
-    train_loader, dev_loader = build_data_loaders(train_data, dev_data)
-
-    # You obviously won't want to create a temporary file for your training
-    # results, but for execution in binder for this course, we need to do this.
-    with tempfile.TemporaryDirectory() as serialization_dir:
-        trainer = build_trainer(
-            model,
-            serialization_dir,
-            train_loader,
-            dev_loader
-        )
-        trainer.train()
-
     return model, dataset_reader
 
 
@@ -121,9 +116,10 @@ def run_training_loop():
 # code, above in the Setup section. We run the training loop to get a trained
 # model.
 model, dataset_reader = run_training_loop()
-
+model = model.load(serialization_dir=serialization_dir)
 # Now we can evaluate the model on a new dataset_reader.
-test_data = dataset_reader.read('../data/movie_review/test.tsv')
+test_data = dataset_reader.read(os.path.join(DATA_PATH, 'test.tsv'))
+
 test_data.index_with(model.vocab)
 data_loader = PyTorchDataLoader(test_data, batch_size=8)
 

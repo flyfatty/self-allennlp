@@ -17,6 +17,7 @@ from allennlp.nn import util
 from allennlp.training.trainer import GradientDescentTrainer, Trainer
 from allennlp.training.optimizers import AdamOptimizer
 from allennlp.training.metrics import CategoricalAccuracy
+from allennlp.training.util import evaluate
 from allennlp.models import BasicClassifier
 from allennlp.modules.seq2vec_encoders import LstmSeq2VecEncoder
 from self_allennlp.data import ClsTsvDataSetReader, JiebaTokenizer
@@ -24,6 +25,7 @@ from self_allennlp.models import SimpleClassifier
 
 DATA_PATH = "/home/liubin/tutorials/data/action_desc"
 EMBEDDING_FILE = "/home/liubin/tutorials/data/action_desc/embedding.h5"
+serialization_dir = "/home/liubin/tutorials/data/action_desc/runs"
 
 
 def build_dataset_reader() -> DatasetReader:
@@ -83,16 +85,18 @@ def run_training_loop():
 
     # You obviously won't want to create a temporary file for your training
     # results, but for execution in binder for this course, we need to do this.
-    with tempfile.TemporaryDirectory() as serialization_dir:
-        trainer = build_trainer(
-            model,
-            serialization_dir,
-            train_loader,
-            dev_loader
-        )
-        print("Starting training")
-        trainer.train()
-        print("Finished training")
+    # with tempfile.TemporaryDirectory() as serialization_dir:
+
+    trainer = build_trainer(
+        model,
+        serialization_dir,
+        train_loader,
+        dev_loader
+    )
+    print("Starting training")
+    trainer.train()
+    print("Finished training")
+    return model, dataset_reader
 
 
 # The other `build_*` methods are things we've seen before, so they are
@@ -132,4 +136,12 @@ def build_trainer(
     return trainer
 
 
-run_training_loop()
+model, dataset_reader = run_training_loop()
+
+# Now we can evaluate the model on a new dataset_reader.
+test_data = dataset_reader.read('/home/liubin/tutorials/data/action_desc/test.tsv')
+test_data.index_with(model.vocab)
+data_loader = PyTorchDataLoader(test_data, batch_size=8)
+
+results = evaluate(model, data_loader)
+print(results)
