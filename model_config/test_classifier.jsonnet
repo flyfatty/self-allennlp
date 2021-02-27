@@ -1,6 +1,6 @@
 
 {
-    root_path :: "/home/liubin/tutorials/pytorch/self-allennlp/data",
+    root_path :: "data",
 
     "train_data_path": $.root_path + "/movie_review/train.tsv",
     "validation_data_path": $.root_path + "/movie_review/valid.tsv",
@@ -11,7 +11,7 @@
             "type":"whitespace"
         },
         "token_indexer":{
-            "index1":{
+            "tokens":{
                 "type":"single_id"
             }
         }
@@ -21,7 +21,7 @@
         "text_field_embedder":{
             "type":"basic",
             "token_embedders":{
-                "index1":{
+                "tokens":{
                     "type":"embedding",
                     "embedding_dim":128
                 }

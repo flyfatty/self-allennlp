@@ -10,4 +10,4 @@ from allennlp.modules.seq2seq_encoders import pytorch_seq2seq_wrapper, pytorch_t
 from allennlp_models.generation import StackedSelfAttentionDecoderNet
 
 #############################################################################
-
+from allennlp.modules.softmax_loss import SoftmaxLoss

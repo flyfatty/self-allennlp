@@ -38,8 +38,48 @@ cls_tsv_dataset_reader    分类任务
 mimic    QA
 """
 
-
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
+
+
+@DatasetReader.register("cls_abs_jsonl_dataset_reader")
+class ClsAbsJsonlDataSetReader(DatasetReader):
+
+    def __init__(self, tokenizer: Tokenizer = None,
+                 token_indexer: Dict[str, TokenIndexer] = None,
+                 max_tokens: int = None,
+                 key_map: Dict[str, str] = None,
+                 **kwargs) -> None:
+        super().__init__(**kwargs)
+        self.tokenizer = tokenizer or WhitespaceTokenizer()
+        self.token_indexer = token_indexer or {"tokens": SingleIdTokenIndexer()}
+        self.max_tokens = max_tokens
+        assert 'title' in key_map
+        assert 'abstract' in key_map
+        assert 'label' in key_map
+        self.key_map = key_map
+
+    def _read(self, file_path: str) -> Iterable[Instance]:
+        import json
+        key_map = self.key_map
+        with open(file_path, 'r') as lines:
+            for line in lines:
+                json_dict = json.loads(line.strip())
+                title = json_dict.get(key_map.get('title'))
+                abstract = json_dict.get(key_map.get('abstract'))
+                label = json_dict.get(key_map.get('label'))
+                yield self.text_to_instance(title, abstract, label)
+
+    def text_to_instance(self, title: str, abstract: str, label: str = None) -> Instance:
+        tokenized_title = self.tokenizer.tokenize(title)
+        tokenized_abstract = self.tokenizer.tokenize(abstract)
+
+        text_fields = TextField(tokenized_title, self.token_indexer)
+        abstract_field = TextField(tokenized_abstract, self.token_indexer)
+
+        fields = {"title": text_fields, 'abstract': abstract_field}
+        if label is not None:
+            fields["label"] = LabelField(label)
+        return Instance(fields)
 
 
 @DatasetReader.register("cls_tsv_dataset_reader")
@@ -49,20 +89,25 @@ class ClsTsvDataSetReader(DatasetReader):
                  token_indexer: Dict[str, TokenIndexer] = None,
                  max_tokens: int = None,
                  label_first: bool = False,
+                 limit=-1,
                  **kwargs) -> None:
         super().__init__(**kwargs)
         self.tokenizer = tokenizer or WhitespaceTokenizer()
         self.token_indexer = token_indexer or {"tokens": SingleIdTokenIndexer()}
         self.max_tokens = max_tokens
         self.label_first = label_first
+        self.limit = limit
 
     def _read(self, file_path: str) -> Iterable[Instance]:
         with open(file_path, 'r') as lines:
+            limit = self.limit
             for line in lines:
                 text, label = line.strip().split('\t')
                 if self.label_first:
                     label, text = text, label
                 yield self.text_to_instance(text, label)
+                limit -= 1
+                if limit == 0: break
 
     def text_to_instance(self, text: str, label: str = None) -> Instance:
         tokens = self.tokenizer.tokenize(text)

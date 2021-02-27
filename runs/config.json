@@ -1,0 +1,43 @@
+{
+    "dataset_reader": {
+        "type": "cls_tsv_dataset_reader",
+        "token_indexer": {
+            "tokens": {
+                "type": "single_id"
+            }
+        },
+        "tokenizer": {
+            "type": "jieba"
+        }
+    },
+    "model": {
+        "type": "basic_classifier_f",
+        "seq2vec_encoder": {
+            "type": "stacked_bidirectional_lstm",
+            "hidden_size": 256,
+            "input_size": 200,
+            "layer_dropout_probability": 0.2,
+            "num_layers": 2
+        },
+        "text_field_embedder": {
+            "type": "basic",
+            "token_embedders": {
+                "tokens": {
+                    "type": "embedding",
+                    "embedding_dim": 200,
+                    "pretrained_file": "/home/liubin/tutorials/data/action_desc/embedding.h5"
+                }
+            }
+        }
+    },
+    "train_data_path": "/home/liubin/tutorials/data/action_desc/train.tsv",
+    "validation_data_path": "/home/liubin/tutorials/data/action_desc/valid.tsv",
+    "trainer": {
+        "num_epochs": 5,
+        "optimizer": "adam"
+    },
+    "data_loader": {
+        "batch_size": 32,
+        "shuffle": true
+    }
+}

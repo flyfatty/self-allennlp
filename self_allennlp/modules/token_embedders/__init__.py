@@ -6,6 +6,7 @@
 
 
 from allennlp.modules.text_field_embedders import BasicTextFieldEmbedder
-from allennlp.modules.token_embedders import Embedding
+from allennlp.modules.token_embedders import Embedding, PretrainedTransformerEmbedder, \
+    PretrainedTransformerMismatchedEmbedder
 
 ###################################################################

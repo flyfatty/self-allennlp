@@ -10,6 +10,7 @@ from allennlp_models.generation import SimpleSeq2Seq, CopyNetSeq2Seq, ComposedSe
 
 ###############################################################
 
-from .simple_classifier import SimpleClassifier
+from .basic_classifier import BasicClassifierF
+from .bert_classifier import BertClassifier
 
-__all__ = ["SimpleClassifier"]
+__all__ = ["BasicClassifierF", "BertClassifier"]

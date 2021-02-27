@@ -3,3 +3,8 @@
 # @File : __init__.py.py
 # @Description : 
 # @Software: PyCharm
+
+
+from .sentence_classifier_predictor import SentenceClassifierPredictor
+
+__all__ = [SentenceClassifierPredictor]
