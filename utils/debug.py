@@ -15,7 +15,7 @@ import sys
 
 from allennlp.commands import main
 
-config_file = os.path.join(PROJECT_PATH,"conf/test_classifier.jsonnet")
+config_file = os.path.join(PROJECT_PATH,"conf/demo_classifier.jsonnet")
 
 # Use overrides to train on CPU.
 overrides = json.dumps({"trainer": {"cuda_device": -1}})
@@ -42,7 +42,7 @@ sys.argv = [
 main()
 #
 # if __name__ == '__main__':
-#     config_file = os.path.join(PROJECT_PATH, "conf/test_classifier.jsonnet")
+#     config_file = os.path.join(PROJECT_PATH, "conf/demo_classifier.jsonnet")
 #     # Use overrides to train on CPU.
 #     overrides = json.dumps({"trainer": {"cuda_device": -1}})
 #     serialization_dir = "/tmp/debugger_train"

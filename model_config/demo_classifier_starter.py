@@ -12,21 +12,19 @@ from allennlp.modules.token_embedders import Embedding
 from allennlp.training.optimizers import AdamOptimizer
 from allennlp.training.trainer import Trainer, GradientDescentTrainer
 from allennlp.training.util import evaluate
-from allennlp.modules.seq2vec_encoders import LstmSeq2VecEncoder, BagOfEmbeddingsEncoder
-from self_allennlp.data import ClsTsvDataSetReader, JiebaTokenizer
+from allennlp.modules.seq2vec_encoders import BagOfEmbeddingsEncoder
+from self_allennlp.data import ClsTsvDataSetReader
 from self_allennlp.models import BasicClassifierF
 from self_allennlp.predictors import SentenceClassifierPredictor
 
 MODE = 'train'
-# DATA_PATH = "/home/liubin/tutorials/data/action_desc"
-DATA_PATH = "data/movie_review"
-EMBEDDING_FILE = os.path.join(DATA_PATH, "embedding.h5")
+DATA_PATH = "/home/liubin/tutorials/pytorch/self-allennlp/data/movie_review"
 serialization_dir = os.path.join(DATA_PATH, "runs")
 
 
 # 构建 DatasetReader
 def build_dataset_reader() -> DatasetReader:
-    return ClsTsvDataSetReader(tokenizer=JiebaTokenizer())
+    return ClsTsvDataSetReader(limit=10)
 
 
 # 加载数据

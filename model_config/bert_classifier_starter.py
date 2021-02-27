@@ -21,10 +21,9 @@ from self_allennlp.predictors import SentenceClassifierPredictor
 MODE = 'train'
 # DATA_PATH = "/home/liubin/tutorials/data/action_desc"
 DATA_PATH = "/home/liubin/tutorials/pytorch/self-allennlp/data/movie_review"
-EMBEDDING_FILE = os.path.join(DATA_PATH, "embedding.h5")
 serialization_dir = os.path.join(DATA_PATH, "runs")
 
-bert_model = 'bert-base-uncased'
+bert_model = '/home/liubin/tutorials/data/Pretrained_Model/bert-base-uncased'
 max_length = 50
 
 
