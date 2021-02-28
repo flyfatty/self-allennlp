@@ -29,12 +29,10 @@ class BasicClassifierF(BasicClassifier):
             num_labels: int = None,
             label_namespace: str = "labels",
             namespace: str = "tokens",
-            initializer: InitializerApplicator = InitializerApplicator(),
-            f_beta=1):
+            initializer: InitializerApplicator = InitializerApplicator()):
         super().__init__(vocab, text_field_embedder, seq2vec_encoder, seq2seq_encoder, feedforward, dropout, num_labels,
                          label_namespace, namespace, initializer)
 
-        self._beta = f_beta
         self._f1 = F1Measure(1)
 
     def forward(self,

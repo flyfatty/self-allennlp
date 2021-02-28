@@ -13,12 +13,17 @@ from allennlp.training.optimizers import AdamOptimizer
 from allennlp.training.trainer import Trainer, GradientDescentTrainer
 from allennlp.training.util import evaluate
 from allennlp.modules.seq2vec_encoders import BagOfEmbeddingsEncoder
+from config import ConfigManager
 from self_allennlp.data import ClsTsvDataSetReader
 from self_allennlp.models import BasicClassifierF
 from self_allennlp.predictors import SentenceClassifierPredictor
 
+config = ConfigManager()
+
 MODE = 'train'
-DATA_PATH = "/home/liubin/tutorials/pytorch/self-allennlp/data/movie_review"
+# 任务数据集目录
+DATA_PATH = os.path.join(config.PROJECT_PATH, "data/movie_review")
+# 保存模型目录（默认位于任务数据集目录内）
 serialization_dir = os.path.join(DATA_PATH, "runs")
 
 

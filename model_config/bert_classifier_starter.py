@@ -13,24 +13,25 @@ from allennlp.data.token_indexers import PretrainedTransformerIndexer
 from allennlp.training.optimizers import AdamOptimizer
 from allennlp.training.trainer import Trainer, GradientDescentTrainer
 from allennlp.training.util import evaluate
-from allennlp.modules.seq2vec_encoders import BertPooler, BagOfEmbeddingsEncoder
-from self_allennlp.data import ClsTsvDataSetReader, JiebaTokenizer, PretrainedTransformerTokenizer
+from allennlp.modules.seq2vec_encoders import BertPooler
+
+from config import ConfigManager
+from self_allennlp.data import ClsTsvDataSetReader, PretrainedTransformerTokenizer
 from self_allennlp.models import BasicClassifierF, BertClassifier
 from self_allennlp.predictors import SentenceClassifierPredictor
 
+config = ConfigManager()
 MODE = 'train'
-# DATA_PATH = "/home/liubin/tutorials/data/action_desc"
-DATA_PATH = "/home/liubin/tutorials/pytorch/self-allennlp/data/movie_review"
-serialization_dir = os.path.join(DATA_PATH, "runs")
 
-bert_model = '/home/liubin/tutorials/data/Pretrained_Model/bert-base-uncased'
-max_length = 50
+DATA_PATH = os.path.join(config.DATA_PATH, "movie_review")
+serialization_dir = os.path.join(config.DATA_PATH, "runs")
+bert_model = os.path.join(config.DATA_PATH, "Pretrained_Model/bert-base-uncased")
 
 
 # 构建 DatasetReader
 def build_dataset_reader() -> DatasetReader:
-    toeknizer = PretrainedTransformerTokenizer(bert_model)
-    indexer = {'tokens': PretrainedTransformerIndexer(bert_model)}
+    toeknizer = PretrainedTransformerTokenizer(bert_model, max_length=512)
+    indexer = {'tokens': PretrainedTransformerIndexer(bert_model,max_length=512)}
     return ClsTsvDataSetReader(tokenizer=toeknizer, token_indexer=indexer)
 
 
@@ -47,11 +48,12 @@ def read_data(
 # 生成词表
 def build_vocab(instances: Iterable[Instance] = None) -> Vocabulary:
     print("Building the vocabulary")
-    if os.path.exists(os.path.join(DATA_PATH, "vocab")):
-        vocab = Vocabulary.from_files(os.path.join(DATA_PATH, "vocab"))
+    vocab_path = os.path.join(DATA_PATH, "vocab")
+    if os.path.exists(vocab_path):
+        vocab = Vocabulary.from_files(vocab_path)
     else:
         vocab = Vocabulary.from_instances(instances)
-        vocab.save_to_files(os.path.join(DATA_PATH, "vocab"))
+        vocab.save_to_files(vocab_path)
     return vocab
 
 
@@ -71,14 +73,10 @@ def build_data_loaders(
 
 # 构造模型
 def build_model(vocab: Vocabulary) -> Model:
+    bert_embedder = PretrainedTransformerEmbedder(bert_model)
+    embedder = BasicTextFieldEmbedder({"tokens": bert_embedder})
     print("Building the model")
-    embedder = BasicTextFieldEmbedder(
-        {
-            "tokens": PretrainedTransformerEmbedder("bert-base-uncased",sub_module='encoder',max_length=512)
-        }
-    )
-    encoder = BertPooler(bert_model)
-    model = BasicClassifierF(vocab, text_field_embedder=embedder, seq2vec_encoder=encoder)
+    model = BertClassifier(vocab, embedder=embedder)
     return model
 
 
@@ -94,6 +92,7 @@ def build_trainer(
         for n, p in model.named_parameters() if p.requires_grad
     ]
     optimizer = AdamOptimizer(parameters)
+    # optimizer = AdamW(parameters, lr=2e-5, eps=1e-8)
     trainer = GradientDescentTrainer(
         model=model,
         serialization_dir=serialization_dir,

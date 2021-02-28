@@ -19,6 +19,6 @@ class ConfigManager(object):
         data_path = yaml_config_dict.get('DATA_PATH')
         self.DATA_PATH = data_path if data_path.startswith('/') else os.path.join(PROJECT_PATH, data_path)
 
-
-conf = ConfigManager()
-print(conf.DATA_PATH)
+if __name__ == '__main__':
+    conf = ConfigManager()
+    print(conf.DATA_PATH)

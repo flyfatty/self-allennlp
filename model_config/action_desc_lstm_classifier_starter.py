@@ -12,13 +12,19 @@ from allennlp.training.optimizers import AdamOptimizer
 from allennlp.training.trainer import Trainer, GradientDescentTrainer
 from allennlp.training.util import evaluate
 from allennlp.modules.seq2vec_encoders import LstmSeq2VecEncoder
+from config import ConfigManager
 from self_allennlp.data import ClsTsvDataSetReader, JiebaTokenizer
 from self_allennlp.models import BasicClassifierF
 from self_allennlp.predictors import SentenceClassifierPredictor
 
+config = ConfigManager()
+
 MODE = 'train'
-DATA_PATH = "/home/liubin/tutorials/data/action_desc"
+# 任务数据集目录
+DATA_PATH = os.path.join(config.DATA_PATH, "action_desc")
+# Embedding目录（默认位于任务数据集目录内）
 EMBEDDING_FILE = os.path.join(DATA_PATH, "embedding.h5")
+# 保存模型目录（默认位于任务数据集目录内）
 serialization_dir = os.path.join(DATA_PATH, "runs")
 
 

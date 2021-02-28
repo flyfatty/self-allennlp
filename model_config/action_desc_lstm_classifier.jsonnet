@@ -1,6 +1,6 @@
 
 {
-    root_path :: "/home/liubin/tutorials/data/action_desc",
+    root_path :: "/usr/local/data/action_desc",
     pretrained_file :: $.root_path + "/embedding.h5",
 
     "train_data_path": $.root_path + "/train.tsv",
