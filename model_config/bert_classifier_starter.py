@@ -31,7 +31,7 @@ bert_model = os.path.join(config.DATA_PATH, "Pretrained_Model/bert-base-uncased"
 # 构建 DatasetReader
 def build_dataset_reader() -> DatasetReader:
     toeknizer = PretrainedTransformerTokenizer(bert_model, max_length=512)
-    indexer = {'tokens': PretrainedTransformerIndexer(bert_model,max_length=512)}
+    indexer = {'tokens': PretrainedTransformerIndexer(bert_model, max_length=512)}
     return ClsTsvDataSetReader(tokenizer=toeknizer, token_indexer=indexer)
 
 
@@ -77,7 +77,7 @@ def build_model(vocab: Vocabulary) -> Model:
     embedder = BasicTextFieldEmbedder({"tokens": bert_embedder})
     print("Building the model")
     model = BertClassifier(vocab, embedder=embedder)
-    return model
+    return model.to(torch.device(0))
 
 
 # 构造训练器
@@ -99,7 +99,7 @@ def build_trainer(
         data_loader=train_loader,
         validation_data_loader=dev_loader,
         num_epochs=1,
-        optimizer=optimizer,
+        optimizer=optimizer
     )
     return trainer
 

@@ -1,24 +1,27 @@
 local bert_model = "bert-base-uncased";
-
+local max_length = 512;
 {
+    "train_data_path": "data/movie_review/train.tsv",
+    "validation_data_path": "data/movie_review/valid.tsv",
+
     "dataset_reader" : {
         "type": "classification-tsv",
         "tokenizer": {
             "type": "pretrained_transformer",
             "model_name": bert_model,
+            "max_length": max_length
         },
         "token_indexers": {
-            "bert": {
+            "tokens": {
                 "type": "pretrained_transformer",
                 "model_name": bert_model,
+                "max_length": max_length
             }
-        },
-        "max_tokens": 512
+        }
     },
-    "train_data_path": "data/movie_review/train.tsv",
-    "validation_data_path": "data/movie_review/dev.tsv",
+
     "model": {
-        "type": "simple_classifier",
+        "type": "bert_classifier",
         "embedder": {
             "token_embedders": {
                 "bert": {
@@ -26,15 +29,10 @@ local bert_model = "bert-base-uncased";
                     "model_name": bert_model
                 }
             }
-        },
-        "encoder": {
-            "type": "bert_pooler",
-            "pretrained_model": bert_model,
-            "requires_grad": true
         }
     },
     "data_loader": {
-        "batch_size": 8,
+        "batch_size": 32,
         "shuffle": true
     },
     "trainer": {
