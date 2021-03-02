@@ -10,3 +10,14 @@ CategoricalAccuracy|
 
 【训练】train   使用训练集和验证集训练模型
 【评价】evaluate   使用测试集评价模型    Metrics
+
+
+
+## 模型配置
+    
+#### 序列标注（POS）
+* HMM / MEMMs   `学习p(x,y)`
+* CRF      `sentence-level tag information 学习p(y|x)`
+* Conv-CRF
+* LSTM / BI-LSTM
+* LSTM-CRF / BI-LSTM-CRF `less dependence on word embedding`

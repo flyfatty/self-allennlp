@@ -77,7 +77,7 @@ def build_model(vocab: Vocabulary) -> Model:
     embedder = BasicTextFieldEmbedder({"tokens": bert_embedder})
     print("Building the model")
     model = BertClassifier(vocab, embedder=embedder)
-    return model.to(torch.device(0))
+    return model
 
 
 # 构造训练器

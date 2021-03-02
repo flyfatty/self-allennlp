@@ -40,7 +40,7 @@ class BertClassifier(Model):
         logits = self._linear(cls_embedding)
         output_dict = {"logits": logits, "probs": F.softmax(logits, dim=1)}
         if label is not None:
-            self.accuracy(logits, label)
+            self._accuracy(logits, label)
             output_dict["loss"] = self._loss(logits, label)
         return output_dict
 

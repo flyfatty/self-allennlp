@@ -4,9 +4,7 @@
 # @Description : 
 # @Software: PyCharm
 
-import json
 import os
-from allennlp.commands.train import train_model_from_file
 from config import PROJECT_PATH
 
 import json
@@ -15,7 +13,7 @@ import sys
 
 from allennlp.commands import main
 
-config_file = os.path.join(PROJECT_PATH,"conf/demo_classifier.jsonnet")
+config_file = os.path.join(PROJECT_PATH,"model_config/bert_classifier.jsonnet")
 
 # Use overrides to train on CPU.
 overrides = json.dumps({"trainer": {"cuda_device": -1}})
