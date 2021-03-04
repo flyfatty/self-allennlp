@@ -15,7 +15,7 @@
                 "type":"single_id"
             }
         },
-//        "limit" : 100
+        "limit" : 100
     },
     "model":{
         "type": "crf_tagger",
@@ -25,7 +25,7 @@
                 "tokens":{
                     "type":"embedding",
                     "embedding_dim": 200,
-                    "pretrained_file" : $.root_path + "/Embedding/Tencent_AILab_ChineseEmbedding.txt"
+//                    "pretrained_file" : $.root_path + "/Embedding/Tencent_AILab_ChineseEmbedding.txt"
                 }
             }
         },
@@ -35,7 +35,9 @@
             "input_size": 200 ,
             "num_layers": 1 ,
             "bidirectional": true
-        }
+        },
+        "label_encoding" : "BIO",
+
     },
 
     "data_loader":{
