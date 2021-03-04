@@ -4,6 +4,7 @@
 # @Description : 
 # @Software: PyCharm
 
+from allennlp.data.dataset_readers import SequenceTaggingDatasetReader, Conll2003DatasetReader, ShardedDatasetReader, \
+    InterleavingDatasetReader, AllennlpLazyDataset
 from .dataset_readers import *
 from .tokenizers import *
-

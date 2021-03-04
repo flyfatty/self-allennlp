@@ -15,7 +15,7 @@ import numpy as np
 from overrides import overrides
 from typing import Iterable, Dict, List
 from allennlp.data import DatasetReader, Instance, Tokenizer, TokenIndexer
-from allennlp.data.fields import TextField, LabelField, ListField, ArrayField
+from allennlp.data.fields import TextField, LabelField, ListField, ArrayField, SequenceLabelField
 from allennlp.data.token_indexers import SingleIdTokenIndexer
 from allennlp.data.tokenizers import WhitespaceTokenizer
 
@@ -118,6 +118,46 @@ class ClsTsvDataSetReader(DatasetReader):
         if label:
             label_fields = LabelField(label)
             fields["label"] = label_fields
+        return Instance(fields)
+
+
+@DatasetReader.register("tag_tsv_dataset_reader")
+class TagTsvDataSetReader(DatasetReader):
+
+    def __init__(self, tokenizer: Tokenizer = None,
+                 token_indexer: Dict[str, TokenIndexer] = None,
+                 max_tokens: int = None,
+                 label_first: bool = False,
+                 limit=-1,
+                 **kwargs) -> None:
+        super().__init__(**kwargs)
+        self.tokenizer = tokenizer or WhitespaceTokenizer()
+        self.token_indexer = token_indexer or {"tokens": SingleIdTokenIndexer()}
+        self.max_tokens = max_tokens
+        self.label_first = label_first
+        self.limit = limit
+
+    def _read(self, file_path: str) -> Iterable[Instance]:
+        with open(file_path, 'r') as lines:
+            limit = self.limit
+            for line in lines:
+                text, label = line.strip().split('\t')
+                if self.label_first:
+                    label, text = text, label
+                yield self.text_to_instance(text, label)
+                limit -= 1
+                if limit == 0: break
+
+    def text_to_instance(self, text: str, label: str = None) -> Instance:
+        tokens = self.tokenizer.tokenize(text)
+        labels = label[:self.max_tokens].split(' ')
+        if self.max_tokens:
+            tokens, labels = tokens[:self.max_tokens], labels
+        text_fields = TextField(tokens, self.token_indexer)
+        fields = {"tokens": text_fields}
+        if label:
+            label_fields = SequenceLabelField(labels, text_fields)
+            fields["tags"] = label_fields
         return Instance(fields)
 
 

@@ -7,7 +7,7 @@
 
 from allennlp.models import BasicClassifier, SimpleTagger
 from allennlp_models.generation import SimpleSeq2Seq, CopyNetSeq2Seq, ComposedSeq2Seq, Bart
-
+from allennlp_models.tagging.models import CrfTagger
 ###############################################################
 
 from .basic_classifier import BasicClassifierF
