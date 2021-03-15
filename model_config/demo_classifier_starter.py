@@ -7,6 +7,7 @@ import shutil
 import allennlp
 from allennlp.data import PyTorchDataLoader, DatasetReader, Instance, Vocabulary
 from allennlp.models import Model
+from allennlp.common.params import Params
 from allennlp.modules.text_field_embedders import BasicTextFieldEmbedder
 from allennlp.modules.token_embedders import Embedding
 from allennlp.training.optimizers import AdamOptimizer
@@ -20,9 +21,9 @@ from self_allennlp.predictors import SentenceClassifierPredictor
 
 config = ConfigManager()
 
-MODE = 'train'
+MODE = 'test'
 # 任务数据集目录
-DATA_PATH = os.path.join(config.PROJECT_PATH, "data/movie_review")
+DATA_PATH = os.path.join("/home/liubin/data/movie_review")
 # 保存模型目录（默认位于任务数据集目录内）
 serialization_dir = os.path.join(DATA_PATH, "runs")
 
@@ -142,12 +143,15 @@ if __name__ == '__main__':
         test_data.index_with(model.vocab)
         data_loader = PyTorchDataLoader(test_data, batch_size=8)
         results = evaluate(model, data_loader)
-        print(results)
     else:
-        vocab = build_vocab()
         dataset_reader = build_dataset_reader()
-        model = build_model(vocab)
-        model.load_state_dict(torch.load(open(os.path.join(serialization_dir, 'best.th'), 'rb')))
+        if not os.path.exists(os.path.join(serialization_dir, 'model.tar.gz')):
+            vocab = build_vocab()
+            model = build_model(vocab)
+            model.load_state_dict(torch.load(open(os.path.join(serialization_dir, 'best.th'), 'rb')))
+        else:
+            config = Params.from_file(os.path.join(serialization_dir, 'config.json'))
+            model = Model.load(config, serialization_dir=os.path.join(serialization_dir))
         if MODE == 'test':
             test_data = dataset_reader.read(os.path.join(DATA_PATH, 'test.tsv'))
             test_data.index_with(model.vocab)

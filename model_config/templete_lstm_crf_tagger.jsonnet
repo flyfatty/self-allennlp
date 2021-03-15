@@ -37,7 +37,6 @@
             "bidirectional": true
         },
         "label_encoding" : "BIO",
-
     },
 
     "data_loader":{

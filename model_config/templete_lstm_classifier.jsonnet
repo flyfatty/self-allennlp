@@ -1,6 +1,6 @@
 
 {
-    root_path :: "data",
+    root_path :: "/home/liubin/data",
 
     "train_data_path": $.root_path + "/movie_review/train.tsv",
     "validation_data_path": $.root_path + "/movie_review/valid.tsv",
@@ -28,14 +28,18 @@
             }
         },
         "seq2vec_encoder":{
-            "type":"boe"  ,
-            "embedding_dim" : 128
+            "type":"lstm"  ,
+            "hidden_size" : 128,
+            "input_size": 128,
+            "num_layers": 1,
+            "bidirectional": false,
+            "layer_dropout_probability": 0
         }
     },
 
     "data_loader":{
-        "batch_size": 32,
-        "shuffle":true
+        "batch_size": 16,
+        "shuffle": true
     },
 
     "trainer":{
