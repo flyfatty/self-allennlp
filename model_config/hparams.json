@@ -1,0 +1,33 @@
+[
+  {
+    "type": "float",
+    "attributes": {
+      "name": "lr",
+      "low": 1e-5,
+      "high": 1e-2
+    }
+  },
+  {
+    "type": "int",
+    "attributes": {
+      "name": "warmup_steps",
+      "low": 1,
+      "high": 1e3
+    }
+  },
+  {
+    "type": "float",
+    "attributes": {
+      "name": "weight_decay",
+      "low": 1e-5,
+      "high": 1e-2
+    }
+  },
+  {
+    "type": "categorical",
+    "attributes": {
+      "name": "model_size",
+      "choices": [64, 128, 256,512]
+    }
+  }
+]

@@ -1,7 +1,7 @@
-local lr = 0.001;
-local weight_decay = 0.01;
-local warmup_steps = 10;
-local model_size = 128;
+local lr = std.parseJson(std.extVar('lr'));
+local weight_decay = std.parseJson(std.extVar('weight_decay'));
+local warmup_steps = std.parseInt(std.extVar('warmup_steps'));
+local model_size = std.parseJson(std.extVar('model_size'));
 
 {
     root_path :: "/home/liubin/data",
@@ -45,15 +45,22 @@ local model_size = 128;
     "trainer":{
         "type":"gradient_descent",
         "optimizer" :{
-             "type": "huggingface_adamw",
+             "type": "sgd",
              "lr": lr,
+             "momentum": 0.9,
+             "nesterov": true,
              "weight_decay": weight_decay
          },
-        "num_epochs" : 1,
+        "num_epochs" : 32,
         "learning_rate_scheduler" : {
             "type": "noam",
             "model_size": model_size,
             "warmup_steps": warmup_steps
-        }
+        },
+        "epoch_callbacks": [
+            {
+              type: "optuna_pruner",
+            }
+       ]
     }
 }

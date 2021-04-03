@@ -5,6 +5,7 @@
 # @Software: PyCharm
 
 from allennlp.data.dataset_readers import SequenceTaggingDatasetReader, Conll2003DatasetReader, ShardedDatasetReader, \
-    InterleavingDatasetReader, AllennlpLazyDataset
+    InterleavingDatasetReader
 from .dataset_readers import *
 from .tokenizers import *
+from allennlp.training import EpochCallback

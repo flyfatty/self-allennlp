@@ -9,7 +9,7 @@ from allennlp.models import BasicClassifier, SimpleTagger
 from allennlp_models.generation import SimpleSeq2Seq, CopyNetSeq2Seq, ComposedSeq2Seq, Bart
 from allennlp_models.tagging.models import CrfTagger
 ###############################################################
-
+from torch.nn import Module
 from .basic_classifier import BasicClassifierF
 from .bert_classifier import BertClassifier
 

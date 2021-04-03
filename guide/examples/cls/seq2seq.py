@@ -1,6 +1,6 @@
 # @Time : 2021/1/8 14:20
 # @Author : LiuBin
-# @File : seq2seq.py
+# @File : encoder_decoder.py
 # @Description : 
 # @Software: PyCharm
 

@@ -1,4 +1,14 @@
 # self-allennlp
+
+### Guide
+* 示例任务
+    * 新闻主题分类 news-topic
+* 示例模型
+    * BOW
+    * TFIDF
+    
+###### Optuna
+
 ### 1、训练阶段
 
 ### 2、评价阶段
@@ -14,7 +24,14 @@ CategoricalAccuracy|
 
 
 ## 模型配置
-    
+#### 文本分类（CLS）
+* BOE
+ * demo_classifier.jsonnet
+* LSTM
+ * lstm_classifier.jsonnet
+* Bert
+ * bert_classifier.jsonnet
+
 #### 序列标注（POS）
 * HMM / MEMMs   `学习p(x,y)`
 * CRF      `sentence-level tag information 学习p(y|x)`
