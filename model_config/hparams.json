@@ -11,7 +11,7 @@
     "type": "int",
     "attributes": {
       "name": "warmup_steps",
-      "low": 1,
+      "low": 100,
       "high": 1e3
     }
   },
@@ -28,6 +28,29 @@
     "attributes": {
       "name": "model_size",
       "choices": [64, 128, 256,512]
+    }
+  },
+  {
+    "type": "categorical",
+    "attributes": {
+      "name": "bidirectional",
+      "choices": [true, false]
+    }
+  },
+  {
+    "type": "float",
+    "attributes": {
+      "name": "dropout",
+      "low": 0.1,
+      "high": 0.5
+    }
+  },
+  {
+    "type": "int",
+    "attributes": {
+      "name": "num_layers",
+      "low": 1,
+      "high": 3
     }
   }
 ]

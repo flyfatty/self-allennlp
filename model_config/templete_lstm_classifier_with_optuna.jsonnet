@@ -1,10 +1,10 @@
-local lr = 1e-3;
-local weight_decay = 1e-3;
-local warmup_steps = 300;
-local model_size = 128;
-local num_layers = 1;
-local dropout = 0;
-local bidirectional = false;
+local lr = std.parseJson(std.extVar('lr'));
+local weight_decay = std.parseJson(std.extVar('weight_decay'));
+local warmup_steps = std.parseInt(std.extVar('warmup_steps'));
+local model_size = std.parseJson(std.extVar('model_size'));
+local num_layers = std.parseInt(std.extVar('num_layers'));
+local dropout = std.parseJson(std.extVar('dropout'));
+local bidirectional = std.parseJson(std.extVar('bidirectional'));
 {
 
     root_path :: "data/movie_review",
