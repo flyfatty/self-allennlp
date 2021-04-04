@@ -1,13 +1,13 @@
-local lr = 0.001;
-local weight_decay = 0.01;
-local warmup_steps = 10;
+local lr = 0.00247317795099002;
+local weight_decay = 0.00295310164900628;
+local warmup_steps = 459;
 local model_size = 128;
 
 {
-    root_path :: "/home/liubin/data",
+    root_path :: "data/movie_review",
 
-    "train_data_path": $.root_path + "/movie_review/train.tsv",
-    "validation_data_path": $.root_path + "/movie_review/valid.tsv",
+    "train_data_path": $.root_path + "/train.tsv",
+    "validation_data_path": $.root_path + "/valid.tsv",
 
     "dataset_reader":{
         "type": "cls_tsv_dataset_reader",
@@ -49,7 +49,7 @@ local model_size = 128;
              "lr": lr,
              "weight_decay": weight_decay
          },
-        "num_epochs" : 1,
+        "num_epochs" : 32,
         "learning_rate_scheduler" : {
             "type": "noam",
             "model_size": model_size,

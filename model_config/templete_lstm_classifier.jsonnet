@@ -1,9 +1,8 @@
-
 {
-    root_path :: "/home/liubin/data",
+    root_path :: "data/movie_review",
 
-    "train_data_path": $.root_path + "/movie_review/train.tsv",
-    "validation_data_path": $.root_path + "/movie_review/valid.tsv",
+    "train_data_path": $.root_path + "/train.tsv",
+    "validation_data_path": $.root_path + "/valid.tsv",
 
     "dataset_reader":{
         "type": "cls_tsv_dataset_reader",
@@ -43,7 +42,7 @@
     },
 
     "trainer":{
-        "optimizer" :"adam",
-        "num_epochs" : 3
+        "optimizer" :"adamw",
+        "num_epochs" : 32
     }
 }

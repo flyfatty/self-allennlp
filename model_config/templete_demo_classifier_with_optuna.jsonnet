@@ -4,10 +4,10 @@ local warmup_steps = std.parseInt(std.extVar('warmup_steps'));
 local model_size = std.parseJson(std.extVar('model_size'));
 
 {
-    root_path :: "/home/liubin/data",
+    root_path :: "data/movie_review",
 
-    "train_data_path": $.root_path + "/movie_review/train.tsv",
-    "validation_data_path": $.root_path + "/movie_review/valid.tsv",
+    "train_data_path": $.root_path + "/train.tsv",
+    "validation_data_path": $.root_path + "/valid.tsv",
 
     "dataset_reader":{
         "type": "cls_tsv_dataset_reader",
