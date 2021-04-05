@@ -5,6 +5,7 @@ local model_size = std.parseJson(std.extVar('model_size'));
 local num_layers = std.parseInt(std.extVar('num_layers'));
 local dropout = std.parseJson(std.extVar('dropout'));
 local bidirectional = std.parseJson(std.extVar('bidirectional'));
+
 {
 
     root_path :: "data/movie_review",
@@ -61,6 +62,11 @@ local bidirectional = std.parseJson(std.extVar('bidirectional'));
             "type": "noam",
             "model_size": model_size,
             "warmup_steps": warmup_steps
-        }
+        },
+        "epoch_callbacks": [
+            {
+              type: "optuna_pruner",
+            }
+       ]
     }
 }
