@@ -1,18 +1,18 @@
-[
-  {
-    "type": "float",
-    "attributes": {
-      "name": "lr",
-      "low": 1e-5,
-      "high": 1e-2
-    }
-  },
+[{
+  "type": "float",
+  "attributes": {
+    "name": "lr",
+    "low": 5e-5,
+    "high": 5e-3,
+    "log": true
+  }
+},
   {
     "type": "int",
     "attributes": {
       "name": "warmup_steps",
-      "low": 100,
-      "high": 1e3
+      "low": 1000,
+      "high": 8000
     }
   },
   {
@@ -27,14 +27,14 @@
     "type": "categorical",
     "attributes": {
       "name": "model_size",
-      "choices": [64, 128, 256,512]
+      "choices": [256, 512]
     }
   },
   {
     "type": "categorical",
     "attributes": {
       "name": "bidirectional",
-      "choices": [true, false]
+      "choices": ["true","false"]
     }
   },
   {
@@ -42,7 +42,7 @@
     "attributes": {
       "name": "dropout",
       "low": 0.1,
-      "high": 0.5
+      "high": 0.3
     }
   },
   {
@@ -51,6 +51,30 @@
       "name": "num_layers",
       "low": 1,
       "high": 3
+    }
+  },
+  {
+    "type": "int",
+    "attributes": {
+      "name": "output_dim",
+      "low": 64,
+      "high": 256
+    }
+  },
+  {
+    "type": "int",
+    "attributes": {
+      "name": "embedding_dim",
+      "low": 200,
+      "high": 256
+    }
+  },
+  {
+    "type": "int",
+    "attributes": {
+      "name": "batch_size",
+      "low": 4,
+      "high": 16
     }
   }
 ]

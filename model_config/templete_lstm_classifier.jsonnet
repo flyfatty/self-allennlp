@@ -1,19 +1,22 @@
 local lr = 1e-3;
+local num_epochs = 10;
+local batch_size = 16;
 local weight_decay = 1e-3;
 local warmup_steps = 300;
 local model_size = 128;
-local num_layers = 1;
-local dropout = 0;
-local bidirectional = false;
+local num_layers = 2;
+local dropout = 0.2;
+local bidirectional = true;
 {
 
-    root_path :: "data/movie_review",
+    root_path :: "data/news-topic",
 
     "train_data_path": $.root_path + "/train.tsv",
     "validation_data_path": $.root_path + "/valid.tsv",
 
     "dataset_reader":{
         "type": "cls_tsv_dataset_reader",
+        "label_first": true,
         "tokenizer":{
             "type":"whitespace"
         },
@@ -45,7 +48,7 @@ local bidirectional = false;
     },
 
     "data_loader":{
-        "batch_size": 16,
+        "batch_size": batch_size,
         "shuffle": true
     },
 
@@ -56,7 +59,7 @@ local bidirectional = false;
              "lr": lr,
              "weight_decay": weight_decay
          },
-        "num_epochs" : 32,
+        "num_epochs" : num_epochs,
         "learning_rate_scheduler" : {
             "type": "noam",
             "model_size": model_size,

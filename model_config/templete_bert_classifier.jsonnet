@@ -1,9 +1,10 @@
-local root_path = "/data";
-local bert_model = root_path + "/Pretrained_Model/bert-base-uncased";
+local bert_model = "data/Pretrained_Model/bert-base-uncased";
 local max_length = 512;
 {
-    "train_data_path": root_path + "/movie_review/train.tsv",
-    "validation_data_path": root_path + "/movie_review/valid.tsv",
+    root_path :: "data/movie_review",
+
+    "train_data_path": $.root_path + "/train.tsv",
+    "validation_data_path": $.root_path + "/valid.tsv",
 
     "dataset_reader" : {
         "type": "cls_tsv_dataset_reader",
