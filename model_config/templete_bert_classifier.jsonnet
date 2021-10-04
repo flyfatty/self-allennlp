@@ -1,13 +1,20 @@
 local bert_model = "data/Pretrained_Model/bert-base-uncased";
 local max_length = 512;
+local cuda_device = 0;
+local num_epochs = 4;
+local batch_size = 16;
+local lr = 1e-5;
+
+
 {
-    root_path :: "data/movie_review",
+    root_path :: "data/news-topic",
 
     "train_data_path": $.root_path + "/train.tsv",
     "validation_data_path": $.root_path + "/valid.tsv",
 
     "dataset_reader" : {
         "type": "cls_tsv_dataset_reader",
+        "label_first": true,
         "tokenizer": {
             "type": "pretrained_transformer",
             "model_name": bert_model,
@@ -35,17 +42,19 @@ local max_length = 512;
         "seq2vec_encoder": {
             "type" : "bert_pooler",
             "pretrained_model" : bert_model,
+            "requires_grad": false
         }
     },
     "data_loader": {
-        "batch_size": 8,
+        "batch_size": batch_size,
         "shuffle": true
     },
     "trainer": {
+        "cuda_device": cuda_device,
         "optimizer": {
             "type": "huggingface_adamw",
-            "lr": 1.0e-5
+            "lr": lr
         },
-        "num_epochs": 5
+        "num_epochs": num_epochs
     }
 }

@@ -1,5 +1,5 @@
 local cuda_device = 0;
-local num_epochs = 8;
+local num_epochs = 3;
 local seed = 42;
 local batch_size = std.parseInt(std.extVar('batch_size'));
 local lr = std.parseJson(std.extVar('lr'));

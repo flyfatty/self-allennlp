@@ -73,8 +73,8 @@
     "type": "int",
     "attributes": {
       "name": "batch_size",
-      "low": 4,
-      "high": 16
+      "low": 16,
+      "high": 64
     }
   }
 ]

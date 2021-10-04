@@ -1,34 +1,17 @@
 # self-allennlp
 
 ### Guide
-* 示例任务
-    * 新闻主题分类 news-topic
-* 示例模型
-    * BOW
-    * TFIDF
-    
-###### Optuna
-
-### 1、训练阶段
-
-### 2、评价阶段
-**Model**里建立Metrics，使用测试集进行评价
-内置Metrics|说明
-:---------:|--
-CategoricalAccuracy| 
-### 3、预测阶段
-
-【训练】train   使用训练集和验证集训练模型
-【评价】evaluate   使用测试集评价模型    Metrics
-
+* 示例数据集
+    * 电影评价-情感分析 movie_review
 
 
 ## 模型配置
 #### 文本分类（CLS）
-* BOE
- * demo_classifier.jsonnet
+* BOE (Demo)
+  * templete_demo_classifier.jsonnet
+  * templete_demo_classifier_with_optuna.jsonnet
 * LSTM
- * lstm_classifier.jsonnet
+ * templete_lstm_classifier.jsonnet
 * Bert
  * bert_classifier.jsonnet
 
